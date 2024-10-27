@@ -6,8 +6,8 @@ import RootLayout from "@/layouts/root-layout.tsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {IndexPage} from "@/routes/index.page.tsx";
 import {AdminPage} from "@/routes/admin.page.tsx";
-import {Players} from "@/features/players.feature.tsx";
-import {ReserveLists} from "@/features/reserve-lists.feature.tsx";
+import {Players} from "@/features/player/players.feature";
+import {ReserveLists} from "@/features/reserve/reserve-lists.feature";
 
 
 const router = createBrowserRouter([
