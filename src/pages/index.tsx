@@ -6,9 +6,10 @@ import { ReservationList } from '@/components/reservation-list';
 import { Toaster } from '@/components/ui/sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { CardType, eventOperations, type Event } from '@/lib/db';
-import { Users } from 'lucide-react';
+import { Calculator, Users } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -97,7 +98,20 @@ export default function RootLayout({
         <div className="space-y-8 container mx-auto p-4">
             <div className="space-y-6">
                 <div className="bg-gradient-to-r from-[#2E2A5D] to-[#7B3C7D] text-white rounded-lg p-6 shadow-lg">
-                    <h1 className="text-4xl font-bold mb-4">{event.name}</h1>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                        <h1 className="text-3xl sm:text-4xl font-bold mb-2 sm:mb-0">{event.name}</h1>
+                        <Button
+                            asChild
+                            className="bg-white hidden w-full text-[#2E2A5D] hover:bg-gray-100 transition-colors duration-200 sm:w-fit sm:flex"
+                        >
+                            <a 
+                            target='_blank'
+                            href={`https://rooman.github.io/ffp-2?mc=${cardTypeCounts["Medicover"]}&ms=${cardTypeCounts["Multisport"]}&msc=${cardTypeCounts["Classic"]}&nc=${cardTypeCounts["No card"]}`}>
+                                <Calculator className="w-4 h-4 mr-2" />
+                                Calculate
+                            </a>
+                        </Button>
+                    </div>
 
 
                     <div className="flex flex-wrap gap-2">
@@ -111,6 +125,19 @@ export default function RootLayout({
                             </Badge>
                         ))}
                     </div>
+
+                    <Button
+                            asChild
+                            className="mt-4 bg-white w-full text-[#2E2A5D] hover:bg-gray-100 transition-colors duration-200 sm:hidden"
+                        >
+                            <a 
+                            target='_blank'
+                            href={`https://rooman.github.io/ffp-2?mc=${cardTypeCounts["Medicover"]}&ms=${cardTypeCounts["Multisport"]}&msc=${cardTypeCounts["Classic"]}&nc=${cardTypeCounts["No card"]}`}>
+                                <Calculator className="w-4 h-4 mr-2" />
+                                Calculate
+                            </a>
+                        </Button>
+                    
                 </div>
             </div>
             <div className="space-y-2">
