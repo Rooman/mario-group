@@ -93,6 +93,10 @@ export default function RootLayout({
         cardTypeOrder.indexOf(a.cardType) - cardTypeOrder.indexOf(b.cardType)
     )
 
+    const mc = cardTypeCounts["Medicover"] || 0
+    const ms = cardTypeCounts["Multisport"] || 0
+    const msc = cardTypeCounts["Classic"] || 0
+    const nc = cardTypeCounts["No card"] || 0
 
     return (
         <div className="space-y-8 container mx-auto p-4">
@@ -106,7 +110,7 @@ export default function RootLayout({
                         >
                             <a 
                             target='_blank'
-                            href={`https://rooman.github.io/ffp-2?mc=${cardTypeCounts["Medicover"]}&ms=${cardTypeCounts["Multisport"]}&msc=${cardTypeCounts["Classic"]}&nc=${cardTypeCounts["No card"]}`}>
+                            href={`https://rooman.github.io/ffp-2?mc=${mc}&ms=${ms}&msc=${msc}&nc=${nc}`}>
                                 <Calculator className="w-4 h-4 mr-2" />
                                 Calculate
                             </a>
