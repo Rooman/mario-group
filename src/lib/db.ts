@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 
+
 const options = {
     auth: {
         localStorage: true,

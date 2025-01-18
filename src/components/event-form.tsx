@@ -62,6 +62,8 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
         ])
         setAvailablePlayers(players)
         setReservations(reservationLists)
+
+        console.log("reservations", reservationLists)
       } catch (error) {
         console.error('Failed to load data:', error)
       } finally {
