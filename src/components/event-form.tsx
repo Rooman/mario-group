@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { MultiSelect } from '@/components/multi-select'
-import { Trash2 } from 'lucide-react'
+import { CalendarIcon, Trash2 } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +20,8 @@ import { toast } from "sonner"
 import { playerOperations, reservationOperations, type Player, type ReservationList, type Event } from '@/lib/db'
 import { Badge } from './ui/badge'
 import { PlayerCard } from './player-card'
+import { Calendar } from './ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 type EventFormProps = {
   initialEvent?: Event
@@ -33,6 +35,23 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
   const [reservations, setReservations] = useState<ReservationList[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const handleSetDate = (date: Date | undefined) => {
+    setDate(date)
+    if (date) {
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }
+      const formattedDate = date.toLocaleDateString('en-GB', options)
+      setEventName(formattedDate)
+    }
+  }
+
+
+
   // Load players and reservations
   useEffect(() => {
     const loadData = async () => {
@@ -43,6 +62,8 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
         ])
         setAvailablePlayers(players)
         setReservations(reservationLists)
+
+        console.log("reservations", reservationLists)
       } catch (error) {
         console.error('Failed to load data:', error)
       } finally {
@@ -54,8 +75,8 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-   await onSave({ name: eventName, players: selectedPlayers })
-   toast.success('Event saved successfully')
+    await onSave({ name: eventName, players: selectedPlayers })
+    toast.success('Event saved successfully')
   }
 
   const handleRemoveAllPlayers = () => {
@@ -83,7 +104,26 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="eventName">Event Name</Label>
+      <Label htmlFor="eventName">Event Name</Label>
+      <div className="flex items-center gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+
+            >
+              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={handleSetDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
         <Input
           id="eventName"
           value={eventName}
@@ -91,6 +131,7 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
           placeholder="Enter event name"
           required
         />
+        </div>
       </div>
       <div className="space-y-2">
         <Label>Add Players from Reservations</Label>
@@ -125,16 +166,16 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
             return player ? (
               <Card key={player.id}>
                 <CardContent className="flex items-center justify-between p-4">
-                <PlayerCard player={player}>
-                
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleRemovePlayer(player.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Remove {player.name}</span>
-                  </Button>
+                  <PlayerCard player={player}>
+
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleRemovePlayer(player.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Remove {player.name}</span>
+                    </Button>
                   </PlayerCard>
                 </CardContent>
               </Card>
@@ -162,6 +203,6 @@ export function EventForm({ initialEvent, onSave }: EventFormProps) {
         </AlertDialog>
         <Button type="submit">Save Event</Button>
       </div>
-    </form>
+    </form >
   )
 }

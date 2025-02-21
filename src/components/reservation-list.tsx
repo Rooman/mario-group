@@ -38,6 +38,8 @@ export function ReservationList({ refreshTrigger = 0 }: ReservationListProps) {
   const refreshReservations = async () => {
     try {
       const dbReservations = await reservationOperations.getAllReservationLists()
+
+      console.log("dbReservations", dbReservations)
       setReservations(dbReservations)
       if (!activeTab && dbReservations.length > 0) {
         setActiveTab(dbReservations[0].id)
@@ -110,7 +112,7 @@ export function ReservationList({ refreshTrigger = 0 }: ReservationListProps) {
               key={reservation.id}
               value={reservation.id}
               className={cn(
-                "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+                "data-[state=active]:bg-slate-700 cursor-pointer data-[state=active]:text-white data-[state=active]:shadow-sm",
                 "data-[state=inactive]:bg-muted/50 data-[state=inactive]:text-muted-foreground",
                 "px-3 py-2 text-sm font-medium transition-all"
               )}

@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 
-const supabaseUrl = ''
-const supabaseKey = ''
+
 const options = {
     auth: {
         localStorage: true,
@@ -39,6 +38,13 @@ export type Event = {
   name: string
   created_at?: string
   players: Player[]
+}
+
+// Add these types
+export type PlayerPayment = {
+  event_id: string
+  player_id: string
+  paid: boolean
 }
 
 // Player operations
@@ -287,6 +293,14 @@ export const eventOperations = {
 
     if (deleteError) throw deleteError
 
+    // Remove existing payment records
+    const { error: deletePaymentsError } = await supabase
+      .from('player_event_payments')
+      .delete()
+      .eq('event_id', eventId)
+
+    if (deletePaymentsError) throw deletePaymentsError
+
     // Add new players
     if (playerIds.length > 0) {
       const playerEvents = playerIds.map(playerId => ({
@@ -299,6 +313,51 @@ export const eventOperations = {
         .insert(playerEvents)
 
       if (insertError) throw insertError
+
+      // Initialize payment records for all new players as unpaid
+      const playerPayments = playerIds.map(playerId => ({
+        event_id: eventId,
+        player_id: playerId,
+        paid: false
+      }))
+
+      const { error: insertPaymentsError } = await supabase
+        .from('player_event_payments')
+        .insert(playerPayments)
+
+      if (insertPaymentsError) throw insertPaymentsError
     }
+  },
+
+  async getEventPayments(eventId: string): Promise<Record<string, boolean>> {
+    const { data, error } = await supabase
+      .from('player_event_payments')
+      .select('player_id, paid')
+      .eq('event_id', eventId)
+    
+    if (error) throw error
+
+    return data.reduce((acc: Record<string, boolean>, payment) => {
+      acc[payment.player_id] = payment.paid
+      return acc
+    }, {})
+  },
+
+  async updatePlayerPayment(eventId: string, playerId: string, paid: boolean): Promise<void> {
+    const { error } = await supabase
+      .from('player_event_payments')
+      .upsert(
+        {
+          event_id: eventId,
+          player_id: playerId,
+          paid
+        },
+        {
+          onConflict: 'event_id,player_id',
+          ignoreDuplicates: false
+        }
+      )
+    
+    if (error) throw error
   }
 } 

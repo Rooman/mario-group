@@ -2,17 +2,17 @@ import { useEffect, useState, ComponentType } from 'react'
 import { useRouter } from 'next/navigation'
 
 
-export function withAuth<P extends object>(WrappedComponent: ComponentType<P>) {
-  return function WithAuth(props: P) {
+export function withFameAuth<P extends object>(WrappedComponent: ComponentType<P>) {
+  return function WithFameAuth(props: P) {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
-      const password = localStorage.getItem('admin-password')
-      if (password !== ADMIN_PASSWORD) {
-        const userPassword = prompt('Please enter admin password:')
-        if (userPassword === ADMIN_PASSWORD) {
-          localStorage.setItem('admin-password', userPassword)
+      const password = localStorage.getItem('fame-password')
+      if (password !== FAME_PASSWORD) {
+        const userPassword = prompt('Please enter payment page password:')
+        if (userPassword === FAME_PASSWORD) {
+          localStorage.setItem('fame-password', userPassword)
           setIsAuthenticated(true)
         } else {
           router.push('/')
